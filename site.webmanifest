@@ -1,0 +1,19 @@
+{
+  "name": "Amethyst 🇯🇵",
+  "short_name": "Amethyst",
+  "icons": [
+    {
+      "src": "/he.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/he.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#335eff",
+  "background_color": "#335eff",
+  "display": "standalone"
+}

@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" type="image/png" href="/he.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <title>???</title>
+  <!-- Amatic SC & Orbitron fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Load local /sans.ttf as LocalSans */
+    @font-face{
+      font-family: "LocalSans";
+      src: url("/sans.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face{
+      font-family: "RobotoMono";
+      src: url("/rob.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* Page background: repeat the original-note image at its original size */
+    html,body{
+      height:100%;
+      margin:0;
+      padding:0;
+      font-family: 'Amatic SC', cursive;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      /* warm medium sticky-note yellow (not too light / dark) */
+      background-color: #F4D06F;
+      color:#111;
+      position:relative;
+    }
+
+    /* subtle crumpled-paper texture made with layered CSS gradients (no image required) */
+    body::before{
+      content: "";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:-1;
+      /* combine faint veins, light noise and soft shadows to mimic crumple */
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.00) 40px),
+        radial-gradient(circle at 80% 80%, rgba(0,0,0,0.055) 0px, rgba(0,0,0,0.00) 60px),
+        repeating-linear-gradient(120deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 1px, rgba(0,0,0,0.00) 3px),
+        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.02));
+      background-blend-mode: multiply, multiply, overlay, normal;
+      opacity:0.9;
+      filter: blur(0.2px) contrast(0.98);
+    }
+
+    /* faint corner shadow to make the 'note' feel tactile */
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      box-shadow: inset 0 40px 80px -40px rgba(0,0,0,0.06), inset 0 -30px 60px -30px rgba(0,0,0,0.04);
+      z-index:-1;
+    }
+
+    .wrap{
+      max-width:980px;
+      margin:40px auto;
+      padding:24px;
+      box-sizing:border-box;
+      background: transparent; /* removed the opaque panel so note background shows through */
+      border-radius:0;
+    }
+
+    h1{
+      text-align:center;
+      font-size:64px;
+      margin:8px 0 6px 0;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .credits{
+      text-align:center;
+      margin-bottom:36px;
+      font-size:28px;
+    }
+
+    .credits a, .credits a:visited{
+      color:#E67E00; /* stronger amber-orange for better contrast */
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.35); /* subtle dark glow to stand out on light background */
+      font-weight:700;
+      text-decoration:none;
+      border-bottom:1px dashed rgba(0,0,0,0.2);
+      padding-bottom:2px;
+    }
+
+    .credits a:hover{ text-decoration:underline; }
+
+    .big-space{ height:30px; }
+
+    .screenshot{
+      display:block;
+      margin:24px auto;
+      max-width:80%;
+      max-height:70vh;
+      width:auto;
+      height:auto;
+      object-fit:contain;
+    }
+
+    .description{
+      font-size:34px; /* larger description as requested */
+      line-height:1.25;
+      text-align:center;
+      margin:28px 12px;
+    }
+
+    .small-note{
+      text-align:center;
+      margin-top:18px;
+      font-size:18px;
+      color:#333;
+    }
+
+    /* ensure the second image visually matches the first and is centered */
+    .screenshot.small{
+      margin-top:36px;
+      display:block;
+    }
+
+    /* --- CREDITS SECTION STYLES --- */
+    .credits-section{
+      max-width:900px;
+      margin:28px auto 8px;
+      padding:18px 12px;
+      box-sizing:border-box;
+    }
+
+    .credits-header{
+      text-align:center;
+      font-size:40px;
+      margin:16px 0 20px;
+      font-weight:700;
+      color:#222;
+      text-shadow:1px 1px 0 rgba(255,255,255,0.4);
+    }
+
+    .credits-list{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .credit-entry{
+      display:flex;
+      align-items:flex-start; /* name is top-right of image for first entry */
+      gap:14px;
+      background: rgba(255,255,255,0.02);
+      padding:10px;
+      border-radius:8px;
+    }
+
+    .credit-img{
+      width:96px;
+      height:96px;
+      object-fit:cover;
+      flex:0 0 96px;
+      border:2px solid rgba(0,0,0,0.12);
+      border-radius:8px; /* rounded corners by default */
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    /* For the "models" entry: keep border but square corners */
+    .credit-img.no-radius{
+      border-radius:0;
+    }
+
+    .credit-text{
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      gap:6px;
+    }
+
+    .credit-name{
+      margin:0;
+      font-size:20px;
+      line-height:1;
+    }
+
+    .credit-desc{
+      margin:0;
+      font-size:15px;
+      opacity:0.95;
+    }
+
+    .custom-text{
+      margin:0;
+      font-size:13px;
+      font-style:italic;
+      color:#222;
+      opacity:0.9;
+    }
+
+    /* FONT OVERRIDES PER ENTRY */
+    /* First entry: use the local /sans.ttf (LocalSans); fall back to Comic Sans if missing */
+    .credit-entry.font-comic .credit-name,
+    .credit-entry.font-comic .credit-desc,
+    .credit-entry.font-comic .custom-text{
+      font-family: "LocalSans", "Comic Sans MS", "Comic Sans", cursive;
+    }
+
+    .play-btn {
+  display: block;
+  margin: 2em auto;               /* centers horizontally */
+  padding: 1em 2.5em;             /* spacing inside */
+  background-color: #335eff;      /* darker blue */
+  border: none;                   /* no border */
+  border-radius: 16px;            /* rounded corners */
+  min-width: 90px;  
+  max-width: 160px;             /* slightly wider */
+  min-height: 30px;               /* slightly taller */
+  min-height: 30px;               /* slightly taller */
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  text-decoration: none;          /* remove underline */
+  display: flex;                  /* center content */
+  align-items: center;
+  justify-content: center;
+}
+
+.play-icon {
+  max-height: 75%;     /* bigger icon */
+  max-width: 75%;
+}
+
+    .font-orbitron .credit-name,
+    .font-orbitron .credit-desc{
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing:0.5px;
+    }
+
+    .font-serif .credit-name,
+    .font-serif .credit-desc{
+      font-family: "RobotoMono", "Roboto", serif;
+    }
+
+    /* Make the quoted custom text smaller and ensure it appears beneath the description */
+    .credit-entry .custom-text.small-quote{
+      font-size:12px;
+      opacity:0.85;
+    }
+
+    /* Responsive: stack horizontally on small screens */
+    @media (max-width:720px){
+      .credit-entry{
+        flex-direction:row;
+        align-items:flex-start;
+      }
+      .credit-img{ width:72px; height:72px; flex:0 0 72px; }
+      .credit-name{ font-size:18px; }
+      .credit-desc{ font-size:13px; }
+    }
+
+    @media (max-width:480px){
+      .credits-list{ gap:10px; }
+      .credit-entry{ flex-direction:row; gap:10px; padding:8px; }
+      .credit-img{ width:60px; height:60px; flex:0 0 60px; }
+      .credit-name{ font-size:16px; }
+      .credit-desc{ font-size:12px; }
+      .custom-text{ font-size:11px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 id="main-title">???</h1>
+
+    <div class="credits">
+      by <a id="name1" href="#">Amethyst 🇯🇵</a> and <a id="name2" href="#">•♫•♬• 𝒔𝒑 •♬•♫•</a>
+    </div>
+
+    <div class="big-space"></div>
+
+    <!-- first original-resolution image, centered -->
+    <img src="/game.png" alt="Game preview" class="screenshot" />
+
+    <p class="description">
+      Step into a horror dream conceived by •♫•♬• 𝒔𝒑 •♬•♫•, where every choice you make leaves a mark. The game tracks your actions and reacts to them, so paths diverge and consequences feel personal. There are three endings to uncover — a good ending, a bad ending, and a hidden ending waiting to be discovered — and we intentionally spare details so you can learn them firsthand. Focused on realism and immersion, this world is constantly updated to deepen the mystery and keep each playthrough tense and unforgettable.
+    </p>
+
+    <!-- second original-resolution image, centered -->
+    <img src="/game2.png" alt="Another preview" class="screenshot small" />
+
+      <h2 class="credits-header">Play from here to get an special badge!</h2>
+
+<a href="https://www.roblox.com/join/skrfs"
+   class="btn-primary play-btn">
+   <img src="/images/play.png" alt="Play" class="play-icon">
+</a>
+
+    <!-- ===== NEW: Credits section (below second image) ===== -->
+    <section class="credits-section" aria-label="Credits">
+      <h2 class="credits-header">Credits</h2>
+      <div class="credits-list">
+
+        <!-- First Entry -->
+        <article class="credit-entry font-comic" id="credit-1">
+          <img class="credit-img" src="https://boykisser2189.neocities.org/me.jpg" alt="Amethyst avatar" />
+          <div class="credit-text">
+            <!-- Name: appears top-right of the image (i.e., on the right side, top) -->
+            <h3 class="credit-name">Amethyst 🇯🇵</h3>
+            <p class="credit-desc">Coder and Main Scripter for the game</p>
+            <p class="custom-text small-quote">"I really enjoy making this game"</p>
+          </div>
+        </article>
+
+        <!-- Second Entry (placeholders) -->
+        <article class="credit-entry" id="credit-2">
+          <img class="credit-img" src="https://files.catbox.moe/79dfxm.jpg" alt="Author 2 avatar (placeholder)" />
+          <div class="credit-text">
+            <!-- easy to change: these elements have IDs -->
+            <h3 class="credit-name" id="author2-name">•♫•♬• 𝒔𝒑 •♬•♫•</h3>
+            <p class="credit-desc" id="author2-desc">Creative director and the one that came up with the idea</p>
+            <p class="custom-text" id="author2-custext">"no se wn sígueme en tik tok porfi super.perro81 y en roblox superperro9705"</p>
+          </div>
+        </article>
+
+        <!-- Third Entry -->
+        <article class="credit-entry font-orbitron" id="credit-3">
+          <img class="credit-img" src="https://darkpurpleof.github.io/org-owner.jpg" alt="DarkPurpleOF avatar" />
+          <div class="credit-text">
+            <h3 class="credit-name">DarkPurpleOF</h3>
+            <p class="credit-desc">Image Artist</p>
+            <p class="custom-text">"Did not even know this existed"</p>
+          </div>
+        </article>
+
+        <!-- Fourth Entry (Free Models) - no rounded corners on the image -->
+        <article class="credit-entry font-serif" id="credit-4">
+          <img class="credit-img no-radius" src="/models.png" alt="Free Models preview" />
+          <div class="credit-text">
+            <h3 class="credit-name">Free Models</h3>
+            <p class="credit-desc">None, they're just models</p>
+            <p class="custom-text">"If only models could talk"</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+    <!-- ===== end credits section ===== -->
+
+  </div>
+
+  <script>
+    // Toggle the H1 text when clicked (from "???" to the full phrase)
+    const title = document.getElementById('main-title');
+    title.addEventListener('click', () => {
+      if (title.textContent.trim() === '???') {
+        title.textContent = 'A game without a name yet';
+      } else {
+        title.textContent = '???';
+      }
+    });
+
+    // NOTE: The anchors are left for you to replace with real pages.
+    // Example:
+    document.getElementById('name1').href = '/';
+    document.getElementById('name2').href = 'https://darkpurpleof.github.io/viewprofile?profile=superperro9705%40darkpurpleof.github.io';
+
+    // Example: easy runtime edits for placeholders (you can remove in production)
+    // document.getElementById('author2-name').textContent = 'Replace Me';
+    // document.getElementById('author2-desc').textContent = 'Some description...';
+    // document.getElementById('author2-custext').textContent = '"Custom quote..."';
+  </script>
+</body>
+</html>
