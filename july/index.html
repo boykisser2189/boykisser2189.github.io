@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>...</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000000;
+        }
+
+        #note {
+            cursor: pointer;
+            max-width: 50vw;
+            height: auto;
+            transition: transform 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <img id="note" src="../assets/images/note.png" alt="Note">
+
+    <script>
+        const note = document.getElementById('note');
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let audiobuffer = null;
+        let source = null;
+        let isPlaying = false;
+
+        fetch('/assets/audio/072025.ogg')
+        .then(response => response.arrayBuffer())
+        .then(data => audioContext.decodeAudioData(data))
+        .then(buffer => {
+            audiobuffer = buffer;
+        });
+
+        note.addEventListener('click', () => {
+            if (!audiobuffer) return;
+
+            if (!isPlaying) {
+                source = audioContext.createBufferSource();
+                source.buffer = audiobuffer;
+                source.loop = true;
+                source.connect(audioContext.destination);
+                source.start(0);
+                isPlaying = true;
+            } else {
+                source.stop(0);
+                source.disconnect();
+                source = null;
+                isPlaying = false;
+            }
+        });
+
+
+    </script>
+</body>
+</html>
