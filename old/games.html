@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Games — Amethyst 🇯🇵</title>
+<link rel="icon" href="/he.png" type="image/x-icon">
+
+<style>
+:root { --primary:#fff; --secondary:#000; --tertiary:#ff69b4; }
+[data-theme="dark"]{ --primary:#111; --secondary:#fff; --tertiary:#ff69b4; }
+
+/* smaller page padding and tighter gutters */
+body{
+  background:var(--primary);
+  color:var(--secondary);
+  font-family:'Segoe UI',system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  margin:0;
+  padding:10px 8px;            /* <-- reduced padding */
+  transition:background-color .25s,color .25s;
+}
+
+/* header with compact left spacing */
+header{
+  background:var(--tertiary);
+  color:var(--secondary);
+  padding:8px 10px;            /* slightly smaller */
+  border-radius:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+header h1{ margin:0; font-size:1.35rem; display:flex; align-items:center; gap:8px; }
+
+/* main now uses almost full width with small gutters */
+main{
+  margin-top:14px;
+  /* make the main content take the full available width minus a small gutter */
+  width: calc(100% - 16px);
+  margin-left:8px;            /* small left gutter */
+  margin-right:8px;           /* small right gutter */
+  max-width: none;
+}
+
+/* grid columns and spacing kept, but inner padding reduced */
+.games-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:12px;
+  width:100%;
+  align-items:start;
+  padding:6px;
+  border-radius:8px;
+  background: rgba(0,0,0,0.02);
+}
+
+.game-tile{
+  display:flex; flex-direction:column; align-items:stretch; gap:8px;
+  padding:8px; background: rgba(255,255,255,0.02);
+  border-radius:10px; text-align:center; text-decoration:none;
+  color:var(--secondary); border:1px solid rgba(0,0,0,0.04);
+  transition:transform .12s ease, box-shadow .12s ease;
+  overflow:hidden;
+}
+.game-tile:hover{
+  transform:translateY(-6px); box-shadow:0 10px 24px rgba(0,0,0,0.10);
+  text-decoration:none;
+}
+.game-thumb{
+  width:100%;
+  height:110px;
+  object-fit:cover;
+  border-radius:8px;
+  background:linear-gradient(180deg,#eee,#ccc);
+  display:block;
+}
+.game-title{
+  font-size:0.95rem; font-weight:700; word-break:break-word; padding:4px 6px;
+}
+
+/* filename removed (hidden entirely) */
+/* .game-filename { ... } */
+
+.btn{
+  display:inline-block; margin-top:14px; padding:10px 16px;
+  background:var(--tertiary); color:var(--secondary);
+  border-radius:10px; text-decoration:none; font-weight:700;
+}
+
+/* footer note kept but slightly smaller */
+.footer-note{ position:fixed; right:12px; bottom:12px; opacity:0.45; font-size:0.78rem; }
+
+@media(max-width:900px){
+  /* on smaller screens reduce horizontal gutters even more */
+  main{ width: calc(100% - 12px); margin-left:6px; margin-right:6px; }
+  .games-grid{ gap:10px; }
+}
+@media(max-width:600px){
+  .game-thumb{ height:84px; }
+  header{ padding:8px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="page-title">Games</h1>
+  <div>
+    <select id="language-selector" aria-label="Language">
+      <option value="en">English</option>
+      <option value="es">Español</option>
+      <option value="ja">日本語</option>
+    </select>
+    <button id="theme-toggle" aria-label="Toggle theme">🌓</button>
+  </div>
+</header>
+
+<main id="content">
+  <nav id="games-grid" class="games-grid" aria-live="polite">
+    <!-- JS will populate this -->
+  </nav>
+
+  <div style="margin-top:14px;">
+    <a class="btn" id="back-btn" href="/games/">Back to main page</a>
+  </div>
+</main>
+
+<div class="footer-note" id="footer-note">Made by Amethyst 🇯🇵</div>
+
+<script>
+const games = [
+  // Example entry — edit or add your own
+  { title: "???", file: "../games/mystery.html", img: "/game.png", note: "(In Beta)" },
+
+  // Add your games below:
+  // { title: "My Cool Game", file: "/games/cool.html", img: "/games/cool.gif" },
+  // { title: "Another Game", file: "/games/another.html", img: "/games/another.png" },
+];
+
+// TRANSLATIONS — add or change strings here
+const translations = {
+  en: {
+    title: "Games",
+    back: "Back to main page",
+    noGames: "No games configured. Add entries to the `games` array in the script.",
+    madeBy: "Made by Amethyst 🇯🇵"
+  },
+  es: {
+    title: "Juegos",
+    back: "Volver a la página principal",
+    noGames: "No hay juegos configurados. Añade entradas al array `games` en el script.",
+    madeBy: "Hecho por Amethyst 🇯🇵"
+  },
+  ja: {
+    title: "ゲーム",
+    back: "メインページに戻る",
+    noGames: "ゲームが設定されていません。スクリプト内の `games` 配列に追加してください。",
+    madeBy: "Amethyst 作 🇯🇵"
+  }
+};
+
+// UI elements
+const langSel = document.getElementById('language-selector');
+const pageTitle = document.getElementById('page-title');
+const backBtn = document.getElementById('back-btn');
+const footerNote = document.getElementById('footer-note');
+const grid = document.getElementById('games-grid');
+const themeToggle = document.getElementById('theme-toggle');
+
+// language init
+const browserLang = navigator.language.slice(0,2);
+const defaultLang = ['en','es','ja'].includes(browserLang) ? browserLang : 'en';
+langSel.value = defaultLang;
+setLanguage(defaultLang);
+langSel.addEventListener('change', () => setLanguage(langSel.value));
+
+function setLanguage(lang){
+  const t = translations[lang] || translations.en;
+  pageTitle.textContent = t.title;
+  backBtn.textContent = t.back;
+  footerNote.textContent = t.madeBy;
+  renderGrid(); // re-render so "noGames" message uses current language
+}
+
+// theme toggle (light/dark)
+const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+let darkMode = prefersDark;
+function setTheme(d){ document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); }
+setTheme(darkMode);
+themeToggle.addEventListener('click', () => { darkMode = !darkMode; setTheme(darkMode); });
+
+// helper to create tile DOM (filename removed from view)
+function makeTile(item){
+  const a = document.createElement('a');
+  a.className = 'game-tile';
+  a.href = item.file;
+  a.target = '_self';
+  a.rel = 'noopener';
+
+  const img = document.createElement('img');
+  img.className = 'game-thumb';
+  img.alt = item.title || item.file;
+  img.src = item.img || fallbackPlaceholderDataUri();
+
+  const title = document.createElement('div');
+  title.className = 'game-title';
+  title.textContent = item.title || item.file;
+
+  a.appendChild(img);
+  a.appendChild(title);
+  return a;
+}
+
+function fallbackPlaceholderDataUri(){
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240"><rect fill="#eee" width="100%" height="100%"/><text x="50%" y="50%" font-size="18" text-anchor="middle" dominant-baseline="middle" fill="#666">No image</text></svg>`
+  );
+}
+
+function renderGrid(){
+  grid.innerHTML = '';
+  if (!games || games.length === 0){
+    const lang = langSel.value || 'en';
+    const msg = (translations[lang] || translations.en).noGames;
+    const d = document.createElement('div');
+    d.style.gridColumn = '1/-1';
+    d.style.textAlign = 'left';        /* left-aligned message to reduce left whitespace */
+    d.style.padding = '12px';
+    d.style.color = 'var(--secondary)';
+    d.textContent = msg;
+    grid.appendChild(d);
+    return;
+  }
+
+  for (const g of games){
+    const tile = makeTile(g);
+    grid.appendChild(tile);
+  }
+}
+
+// initial render
+renderGrid();
+</script>
+</body>
+</html>

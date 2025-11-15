@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Not Applicable</title>
+
+<!-- Pixel Operator Font -->
+<link href="https://fonts.cdnfonts.com/css/pixel-operator" rel="stylesheet">
+
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: black;
+        overflow: hidden;
+        font-family: 'Pixel Operator', monospace;
+    }
+
+    /* Even more invisible background GIF */
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: url("https://boykisser2189.neocities.org/he.png") center center no-repeat;
+        background-size: cover;
+        opacity: 0.015; /* almost fully invisible now */
+        pointer-events: none;
+    }
+
+    /* Fade up into center */
+    @keyframes fadeUp {
+        0% {
+            opacity: 0;
+            transform: translateY(120px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(-50vh); /* rises to center */
+        }
+    }
+
+    /* Text styling */
+    .text {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        color: white;
+        font-size: 4rem;    /* larger */
+        font-weight: 900;   /* bolder */
+        letter-spacing: 2px;
+        opacity: 0;
+        animation: fadeUp 3.2s ease-out forwards;
+    }
+</style>
+</head>
+<body>
+    <div class="text">Not Applicable.</div>
+</body>
+</html>

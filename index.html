@@ -3,298 +3,386 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-      <link rel="icon" type="image/x-icon" href="he.png">
+  <link rel="icon" type="image/x-icon" href="he.png">
 
   <title>Amethyst 🇯🇵</title>
+
   <style>
+    /* ------------------------------
+       THEME + LAYOUT
+       ------------------------------ */
     :root {
-      --primary: #ffffff;
-      --secondary: #000000;
-      --tertiary: #ff69b4;
+      --md-sys-primary: #b00020;
+      --md-sys-on-primary: #ffffff;
+      --md-sys-primary-container: #ffdde0;
+      --md-sys-on-primary-container: #410004;
+      --md-sys-surface: #121212;
+      --md-sys-on-surface: #e6e6e6;
+      --md-sys-outline: rgba(255,255,255,0.12);
+      --radius: 12px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
 
-    [data-theme="dark"] {
-      --primary: #111;
-      --secondary: #fff;
-      --tertiary: #ff69b4;
+    html,body{
+      height:100%;
+      margin:0;
+      background: linear-gradient(180deg,#0d0d0d 0%, #121212 100%);
+      color:var(--md-sys-on-surface);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    body {
-      background-color: var(--primary);
-      color: var(--secondary);
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 20px;
-      transition: background-color 0.3s, color 0.3s;
+    /* Desktop card */
+    .app {
+      max-width:860px;
+      margin:48px auto;
+      padding:24px;
+      border-radius:16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      box-shadow: 0 6px 24px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.03);
+      transition: background 120ms, box-shadow 120ms, padding 120ms, margin 120ms, border-radius 120ms;
     }
 
-    header {
-      background-color: var(--tertiary);
-      color: var(--secondary);
-      padding: 10px 20px;
-      border-radius: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* ------------------------------
+       HEADER + SPLASH (placed next to the header title)
+       ------------------------------ */
+
+    .header {
+      display:flex;
+      align-items:center;
+      gap:18px;
+      margin-bottom:22px;
+    }
+
+    .logoCircle {
+      width:56px;
+      height:56px;
+      border-radius:12px;
+      flex-shrink:0;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.04);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .logoCircle img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    /* explicit wrapper for title + splash so we append splash properly */
+    .header-text-wrap {
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:6px;
+      min-width:0;
     }
 
     h1 {
-      margin: 0;
-      font-size: 2em;
+      margin:0;
+      font-size:20px;
+      letter-spacing:0.2px;
+      color:var(--md-sys-on-surface);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
-    select, button.theme-toggle {
-      background-color: var(--primary);
-      color: var(--secondary);
-      border: 2px solid var(--secondary);
-      padding: 6px 12px;
-      font-size: 1em;
-      border-radius: 8px;
-      margin-left: 10px;
-      cursor: pointer;
+    /* splash is small and unobtrusive */
+    .splash {
+      font-family:'Minecraft', sans-serif;
+      font-size:0.95rem;
+      color:#ffdd57;
+      display:inline-block;
+      animation:pulse 0.9s infinite;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
     }
 
-    main {
-      margin-top: 30px;
-      max-width: 800px;
+    @keyframes pulse {
+      0%,100%{opacity:1; transform:scale(1)}
+      50%{opacity:0.75; transform:scale(1.03)}
+    }
+
+    p.lead {
+      margin:0;
+      color:rgba(230,230,230,0.75);
+      font-size:13px;
+    }
+
+    /* ------------------------------
+       CONTENT
+       ------------------------------ */
+
+    #content {
+      display:flex;
+      flex-direction:column;
+      gap:22px;
+      align-items:center;
     }
 
     .gif {
-      width: 90px;
-      margin: 12px 0;
-      border-radius: 12px;
+      width:180px;
+      height:auto;
+      border-radius:8px;
+      display:block;
+      margin: 6px auto;
+    }
+
+    .funny, .quote {
+      font-size:14px;
+      line-height:1.5;
+      opacity:0.9;
+      text-align:center;
+      max-width:760px;
     }
 
     .quote {
-      margin-top: 30px;
-      font-style: italic;
-      color: var(--tertiary);
-      border-left: 4px solid var(--tertiary);
-      padding-left: 12px;
-      border-radius: 8px;
+      color: rgba(255, 221, 221, 0.85);
     }
 
-    .funny {
-      font-size: 1.1em;
-      margin: 20px 0;
-      line-height: 1.6;
-    }
-
-    .btn {
-      display: inline-block;
-      margin-top: 25px;
-      padding: 12px 24px;
-      background-color: var(--tertiary);
-      color: var(--secondary);
-      border: none;
-      border-radius: 12px;
-      font-size: 1em;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.2s ease;
-    }
-
-    .btn:hover {
-      background-color: #ff85c1;
-    }
-
+    /* ---- ME + FLAG GRID ---- */
     .me-and-flag {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      margin-top: 20px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:26px;
+      align-items:start;
+      margin-top:10px;
+      width:100%;
+      max-width:760px;
     }
 
     .extra-img, .flag-img {
-      width: 120px;
-      border-radius: 12px;
+      width:100%;
+      max-width:220px;
+      border-radius:12px;
+      display:block;
+      margin:0 auto;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.55);
+      border:1px solid rgba(255,255,255,0.03);
     }
 
-    .subtext {
-      margin-top: 10px;
-      font-style: italic;
-      color: var(--secondary);
+    .subtext, .flag-quote {
+      text-align:center;
+      font-size:13px;
+      opacity:0.75;
+      margin-top:8px;
     }
 
-    .flag-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 10px;
+    /* CTA */
+    .btn {
+      padding:10px 18px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.03);
+      color:var(--md-sys-on-surface);
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      transition:0.15s;
     }
 
-    .flag-quote {
-      margin-top: 6px;
-      font-style: italic;
-      color: var(--secondary);
-      font-size: 0.95em;
+    .btn:hover {
+      transform:translateY(-2px);
+      box-shadow:0 10px 26px rgba(0,0,0,0.6);
     }
 
-    footer {
-      position: fixed;
-      bottom: 12px;
-      right: 16px;
-      opacity: 0.3;
-      font-size: 0.8em;
+    .btn.outline {
+      background:transparent;
     }
+
+    /* ------------------------------
+       RESPONSIVE: remove desktop "card" on small screens
+       make everything sit on absolute background
+       ------------------------------ */
+    @media (max-width:600px) {
+      .app {
+        /* remove the card visuals so content sits directly on the page bg */
+        margin:0;
+        padding:14px 12px;
+        border-radius:0;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+      }
+
+      /* make header tighter on mobile */
+      .header {
+        gap:12px;
+        margin-bottom:14px;
+      }
+
+      .logoCircle { width:46px; height:46px; border-radius:10px; }
+
+      /* make the GIF and images slightly smaller */
+      .gif { width:140px; }
+      .extra-img, .flag-img { max-width:180px; }
+
+      /* stack the me & flag vertically and center them */
+      .me-and-flag {
+        grid-template-columns: 1fr;
+        gap:12px;
+        justify-items:center;
+      }
+
+      /* keep splash visible but subtle */
+      .splash { font-size:0.95rem; }
+    }
+
+    /* small accessibility tweak for very narrow screens */
+    @media (max-width:360px){
+      h1 { font-size:18px; }
+      .gif { width:120px; }
+    }
+
+    /* keep font-face but it's optional; won't break if missing */
     @font-face {
-  font-family: 'Minecraft';
-  src: url('/Minecraft.ttf') format('truetype');
-}
-
-.splash {
-  font-family: 'Minecraft', sans-serif;
-  font-size: 1.2em;
-  color: yellow;
-  animation: pulse 0.6s infinite;
-  pointer-events: none;
-  z-index: 10;
-  margin-left: 20px;
-}
-
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.6;
-    transform: scale(1.05);
-  }
-}
-
+      font-family: 'Minecraft';
+      src: url('/Minecraft.ttf') format('truetype');
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div style="display: flex; align-items: center; gap: 12px;">
-  <h1 id="page-header">Random Website</h1>
-  <div class="splash" id="splash-text">Loading...</div>
-</div>
+  <div class="app" id="app-root">
+    <header class="header" role="banner">
+      <div class="logoCircle" aria-hidden="true">
+        <img src="he.png" alt="logo" />
+      </div>
 
-    
-    <div>
-      <select id="language-selector" aria-label="Language selector">
-        <option value="en">English</option>
-        <option value="es">Español</option>
-        <option value="ja">日本語</option>
-      </select>
-      <button class="theme-toggle" id="theme-toggle">🌓</button>
+      <!-- title + splash wrapper (splash will be inserted here) -->
+      <div class="header-text-wrap" style="flex:1">
+        <h1 id="page-header">Random Website</h1>
+        <div id="splash-text" class="splash" aria-hidden="true" style="display:none"></div>
+      </div>
 
-    </div>
-  </header>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <select id="language-selector" aria-label="Language selector" class="btn outline" style="min-width:92px; padding:8px 10px; border-radius:10px;">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="ja">日本語</option>
+        </select>
+      </div>
+    </header>
 
-  <main id="content"></main>
+    <main id="content" role="main"></main>
 
-  <script>
-    const translations = {
-      en: {
-        header: "Random Website",
-        content: `
-          <img src="https://boykisser2189.neocities.org/boykisseridk.gif" alt="Funny gif" class="gif" />
-          <div class="funny">This website has no purpose. It just exists. Kinda like your sleep schedule.</div>
-          <div class="quote">“I don’t know what to do with this site lol”</div>
-          <div class="me-and-flag">
-            <div>
-              <img src="https://boykisser2189.neocities.org/me.jpg" alt="me" class="extra-img" />
-              <div class="subtext">Why ask? I don’t know what to do and I never could!</div>
-            </div>
-            <div class="flag-section">
-              <img src="https://boykisser2189.neocities.org/flag.webp" alt="flag" class="flag-img" />
-              <div class="flag-quote">Yes, I am!</div>
-            </div>
+    <div id="toast" role="status" aria-live="polite" style="display:none"></div>
+  </div>
+
+ <script>
+  /* ------------------------------
+     TRANSLATIONS
+     ------------------------------ */
+  const translations = {
+    en: {
+      header: "Random Website",
+      content: `
+        <img src="https://boykisser2189.neocities.org/boykisseridk.gif" class="gif" />
+        <div class="funny">This website has no purpose. It just exists. Kinda like your sleep schedule.</div>
+        <div class="quote">“I don’t know what to do with this site lol”</div>
+        <div class="me-and-flag">
+          <div>
+            <img src="https://boykisser2189.neocities.org/me.jpg" class="extra-img" />
+            <div class="subtext">Why ask? I don’t know what to do and I never could!</div>
           </div>
-          <a class="btn" href="https://boykisser2189.github.io/games/">Games made by me!</a>
-        `
-      },
-      es: {
-        header: "Sitio Random",
-        content: `
-          <img src="https://boykisser2189.neocities.org/boykisseridk.gif" alt="GIF divertido" class="gif" />
-          <div class="funny">Este sitio no tiene propósito. Solo existe. Como tu horario de sueño.</div>
-          <div class="quote">“No sé qué hacer con este sitio lol”</div>
-          <div class="me-and-flag">
-            <div>
-              <img src="https://boykisser2189.neocities.org/me.jpg" alt="yo" class="extra-img" />
-              <div class="subtext">¿Por qué preguntas? No sé qué hacer ¡y nunca podría!</div>
-            </div>
-            <div class="flag-section">
-              <img src="https://boykisser2189.neocities.org/flag.webp" alt="bandera" class="flag-img" />
-              <div class="flag-quote">¡Sí, lo soy!</div>
-            </div>
+          <div>
+            <img src="https://boykisser2189.neocities.org/flag.webp" class="flag-img" />
+            <div class="flag-quote">Yes, I am!</div>
           </div>
-          <a class="btn" href="https://boykisser2189.github.io/games/">¡Juegos hechos por mi!</a>
-        `
-      },
-      ja: {
-        header: "ランダムなサイト",
-        content: `
-          <img src="https://boykisser2189.neocities.org/boykisseridk.gif" alt="面白いGIF" class="gif" />
-          <div class="funny">このサイトに意味はありません。なんとなく存在してます。あなたの睡眠スケジュールみたいに。</div>
-          <div class="quote">「このサイトどうすればいいかわからない lol」</div>
-          <div class="me-and-flag">
-            <div>
-              <img src="https://boykisser2189.neocities.org/me.jpg" alt="自分" class="extra-img" />
-              <div class="subtext">なんで聞くの？何をすればいいか分からないし、きっと無理！</div>
-            </div>
-            <div class="flag-section">
-              <img src="https://boykisser2189.neocities.org/flag.webp" alt="旗" class="flag-img" />
-              <div class="flag-quote">はい、そうです！</div>
-            </div>
+        </div>
+        <a class="btn" href="https://boykisser2189.github.io/games/">Games made by me!</a>
+        <a class="btn" href="https://boykisser2189.github.io/music/">Music by me!</a>
+      `
+    },
+    es: {
+      header: "Sitio Random",
+      content: `
+        <img src="https://boykisser2189.neocities.org/boykisseridk.gif" class="gif" />
+        <div class="funny">Este sitio no tiene propósito. Solo existe. Como tu horario de sueño.</div>
+        <div class="quote">“No sé qué hacer con este sitio lol”</div>
+        <div class="me-and-flag">
+          <div>
+            <img src="https://boykisser2189.neocities.org/me.jpg" class="extra-img" />
+            <div class="subtext">¿Por qué preguntas? No sé qué hacer ¡y nunca podría!</div>
           </div>
-<a class="btn" href="https://boykisser2189.github.io/games/">私が作ったゲーム！</a>
-        `
-      }
-    };
-
-    const langSelector = document.getElementById("language-selector");
-    const themeToggle = document.getElementById("theme-toggle");
-    const contentContainer = document.getElementById("content");
-    const headerEl = document.getElementById("page-header");
-
-    function setLanguage(lang) {
-      const selected = translations[lang] || translations.en;
-      headerEl.textContent = selected.header;
-      contentContainer.innerHTML = selected.content;
+          <div>
+            <img src="https://boykisser2189.neocities.org/flag.webp" class="flag-img" />
+            <div class="flag-quote">¡Sí, lo soy!</div>
+          </div>
+        </div>
+        <a class="btn" href="https://boykisser2189.github.io/games/">¡Juegos hechos por mi!</a>
+        <a class="btn" href="https://boykisser2189.github.io/music/">¡Musica hecha por mi!</a>
+      `
+    },
+    ja: {
+      header: "ランダムなサイト",
+      content: `
+        <img src="https://boykisser2189.neocities.org/boykisseridk.gif" class="gif" />
+        <div class="funny">このサイトに意味はありません。なんとなく存在してます。あなたの睡眠スケジュールみたいに。</div>
+        <div class="quote">「このサイトどうすればいいかわからない lol」</div>
+        <div class="me-and-flag">
+          <div>
+            <img src="https://boykisser2189.neocities.org/me.jpg" class="extra-img" />
+            <div class="subtext">なんで聞くの？何をすればいいか分からないし、きっと無理！</div>
+          </div>
+          <div>
+            <img src="https://boykisser2189.neocities.org/flag.webp" class="flag-img" />
+            <div class="flag-quote">はい、そうです！</div>
+          </div>
+        </div>
+        <a class="btn" href="https://boykisser2189.github.io/games/">私が作ったゲーム！</a>
+        <a class="btn" href="https://boykisser2189.github.io/music/">私の音楽！</a>
+      `
     }
+  };
 
-    const browserLang = navigator.language.slice(0, 2);
-    const defaultLang = ['en', 'es', 'ja'].includes(browserLang) ? browserLang : 'en';
-    langSelector.value = defaultLang;
-    setLanguage(defaultLang);
+  /* ------------------------------
+     ELEMENTS
+     ------------------------------ */
+  const langSelector = document.getElementById("language-selector");
+  const contentContainer = document.getElementById("content");
+  const headerEl = document.getElementById("page-header");
+  const splashEl = document.getElementById("splash-text");
 
-    langSelector.addEventListener("change", () => {
-      setLanguage(langSelector.value);
-    });
-
-    // Theme toggle
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const setTheme = (dark) => {
-      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-    };
-
-    let darkMode = prefersDark;
-    setTheme(darkMode);
-
-    themeToggle.addEventListener("click", () => {
-      darkMode = !darkMode;
-      setTheme(darkMode);
-    });
-    
-    // Splash text loader
-(async () => {
-  try {
-    const res = await fetch('/splash.txt');
-    if (!res.ok) throw new Error();
-    const text = await res.text();
-    const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
-    const splash = lines[Math.floor(Math.random() * lines.length)] || "MissingNo!";
-    document.getElementById('splash-text').textContent = splash;
-  } catch {
-    document.getElementById('splash-text').textContent = "MissingNo!";
+  /* ------------------------------
+     LANGUAGE SWITCHING
+     ------------------------------ */
+  function setLanguage(lang) {
+    const selected = translations[lang] || translations.en;
+    headerEl.textContent = selected.header;
+    contentContainer.innerHTML = selected.content;
   }
-})();
-  </script>
+
+  const browserLang = navigator.language.slice(0, 2);
+  const defaultLang = ['en', 'es', 'ja'].includes(browserLang) ? browserLang : 'en';
+  langSelector.value = defaultLang;
+  setLanguage(defaultLang);
+
+  langSelector.addEventListener("change", () => {
+    setLanguage(langSelector.value);
+  });
+
+  /* ------------------------------
+     SPLASH TEXT LOADER
+     ------------------------------ */
+  (async () => {
+    try {
+      const res = await fetch('/splash.txt');
+      if (!res.ok) throw new Error();
+      const text = await res.text();
+      const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+      splashEl.textContent = lines[Math.floor(Math.random() * lines.length)] || "MissingNo!";
+    } catch {
+      splashEl.textContent = "MissingNo!";
+    }
+    splashEl.style.display = 'inline-block';
+  })();
+</script>
 </body>
 </html>
