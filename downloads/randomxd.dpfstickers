@@ -1,0 +1,49 @@
+{
+  "packId": "randomstickers",
+  "name": "Stickers Random",
+  "description": "Bazta",
+  "author": "Amethyst 🇯🇵",
+  "date": "25-12-2025",
+  "stickers": [
+    {
+      "id": "imafurry",
+      "name": "Amethyst",
+      "resource": "https://boykisser2189.neocities.org/stickers/amethyst.jpg"
+    },
+    {
+      "id": "darkpurpleof",
+      "name": "Dark",
+      "resource": "https://boykisser2189.neocities.org/stickers/dark.png"
+    },
+    {
+      "id": "gwoo",
+      "name": "Gwoo",
+      "resource": "https://boykisser2189.neocities.org/stickers/gwoo.png"
+    },
+    {
+      "id": "Io",
+      "name": "Io",
+      "resource": "https://boykisser2189.neocities.org/stickers/io.png"
+    },
+    {
+      "id": "sticker2",
+      "name": "Boykisser 2",
+      "resource": "https://boykisser2189.neocities.org/stickers/sticker2.png"
+    },
+    {
+      "id": "sticker3",
+      "name": "Boykisser 3",
+      "resource": "https://boykisser2189.neocities.org/stickers/sticker3.png"
+    },
+    {
+      "id": "sticker4",
+      "name": "Boykisser 4",
+      "resource": "https://boykisser2189.neocities.org/stickers/sticker4.png"
+    },
+    {
+      "id": "toriel",
+      "name": "Ns Toriel",
+      "resource": "https://static.wikia.nocookie.net/undertale/images/f/f4/Toriel_face.png/revision/latest?cb=20240202134819"
+    }
+  ]
+}
