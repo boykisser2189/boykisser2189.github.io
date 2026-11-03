@@ -44,6 +44,26 @@
       "id": "toriel",
       "name": "Ns Toriel",
       "resource": "https://static.wikia.nocookie.net/undertale/images/f/f4/Toriel_face.png/revision/latest?cb=20240202134819"
+    },
+    {
+      "id": "sticker5",
+      "name": "Boykisser 5",
+      "resource": "https://boykisser2189.neocities.org/stickers/sticker5.jpg"
+    },
+    {
+      "id": "sticker6",
+      "name": "Boykisser 6",
+      "resource": "https://boykisser2189.neocities.org/stickers/sticker6.png"
+    },
+    {
+      "id": "sticker7",
+      "name": "Boykisser 7",
+      "resource": "https://boykisser2189.neocities.org/stickers/sticker7.png"
+    },
+    {
+      "id": "sticker8",
+      "name": "Boykisser 8",
+      "resource": "https://boykisser2189.neocities.org/stickers/sticker8.jpg"
     }
   ]
 }
